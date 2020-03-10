@@ -1,0 +1,10 @@
+opt_in_rules:
+  - explicit_top_level_acl
+
+disabled_rules:
+  - trailing_comma
+
+excluded:
+  - .build
+  - Tests/*/XCTestManifests.swift
+  - Tests/LinuxMain.swift

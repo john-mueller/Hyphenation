@@ -1,0 +1,46 @@
+name: Tests
+on: 
+  push:
+    branches: 
+      - master
+  pull_request:
+    branches: 
+      - master
+jobs:
+  macOS:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Version
+        run: swift --version
+      - name: Build
+        run: swift build
+      - name: Test
+        run: make test
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup
+        run: |
+          export API_URL="https://swiftenv-api.fuller.li/versions?snapshot=false&platform=ubuntu18.04"
+          export SWIFT_VERSION="$(curl -H 'Accept: text/plain' "$API_URL" | tail -n1)"
+
+          git clone --depth 1 https://github.com/kylef/swiftenv.git ~/.swiftenv
+          export SWIFTENV_ROOT="$HOME/.swiftenv"
+          export PATH="$SWIFTENV_ROOT/bin:$SWIFTENV_ROOT/shims:$PATH"
+          swiftenv install -s
+
+          echo "::set-env name=SWIFT_VERSION::$SWIFT_VERSION"
+          echo "::add-path::$SWIFTENV_ROOT/shims"
+      - name: Version
+        run: |
+          swift --version
+      - name: Build
+        run: |
+          swift build
+      - name: Test
+        run: |
+          make test

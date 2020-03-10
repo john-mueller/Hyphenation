@@ -1,0 +1,10 @@
+output: .docs
+swift_build_tool: spm
+author: John Mueller
+author_url: https://john-mueller.github.io/
+module: Hyphenation
+module_version: v0.1.0
+copyright: © 2020 John Mueller
+github_url: https://github.com/john-mueller/Hyphenation/
+min_acl: public
+theme: fullwidth
