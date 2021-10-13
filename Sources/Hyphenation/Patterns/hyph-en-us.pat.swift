@@ -5,6 +5,11 @@
 //
 // https://github.com/hyphenation/tex-hyphen/blob/master/hyph-utf8/tex/generic/hyph-utf8/patterns/txt/hyph-en-us.pat.txt
 
+// swiftlint:disable file_length
+
+extension String {
+    /// A string containing the default English patterns.
+    internal static let defaultPatterns = """
 .ach4
 .ad4der
 .af1t
@@ -4943,3 +4948,5 @@ yes5ter1y
 z3ian.
 z3o1phr
 z2z3w
+"""
+}

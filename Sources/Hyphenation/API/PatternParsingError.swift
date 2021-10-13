@@ -10,7 +10,7 @@
 public enum PatternParsingError: Error, Equatable {
     /// A pattern string which did not contain at least one letter and one digit from between 1 and 9, inclusive.
     case deficientPattern(String)
-    /// A pattern string which contained a character that was not alphabetic, a digits 1-9, or a period.
+    /// A pattern string which contained a character that was not alphabetic, a digit 1-9, or a period.
     case invalidCharacter(String)
     /// A pattern string which contained multiple consecutive digits.
     case consecutiveDigits(String)

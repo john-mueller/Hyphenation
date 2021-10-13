@@ -163,16 +163,16 @@ final class CorrectnessTests: XCTestCase {
 
     func testCustomPatternFiles() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hy-phen-ation")
-        hyphenator = try Hyphenator(patternFile: testPatternsURL)
+        hyphenator = try Hyphenator(patternFile: .testPatterns)
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hy-phen-a-tion")
-        hyphenator = try Hyphenator(patternFile: testPatternsURL, exceptionFile: testExceptionsURL)
+        hyphenator = try Hyphenator(patternFile: .testPatterns, exceptionFile: .testExceptions)
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hyph-ena-tion")
-        hyphenator = try Hyphenator(patterns: "hyph3\nena3\n4tion")
+        hyphenator = try Hyphenator(patterns: "hyph3 ena3 4tion")
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hyph-enation")
-        hyphenator = try Hyphenator(patterns: "hyph3\nena3\n4tion", exceptions: "hyphe-nation")
+        hyphenator = try Hyphenator(patterns: "hyph3 ena3 4tion", exceptions: "hyphe-nation")
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hyphe-nation")
     }

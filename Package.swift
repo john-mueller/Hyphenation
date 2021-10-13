@@ -15,6 +15,10 @@ let package = Package(
     ],
     targets: [
         .target(name: "Hyphenation"),
-        .testTarget(name: "HyphenationTests", dependencies: ["Hyphenation"]),
+        .testTarget(
+          name: "HyphenationTests",
+          dependencies: ["Hyphenation"],
+          resources: [.process("TextFiles")]
+        )
     ]
 )

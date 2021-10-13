@@ -5,6 +5,9 @@
 //
 // https://github.com/hyphenation/tex-hyphen/blob/master/hyph-utf8/tex/generic/hyph-utf8/patterns/txt/hyph-en-us.hyp.txt
 
+extension String {
+    /// A string containing the default English exceptions.
+    internal static let defaultExceptions = """
 as-so-ciate
 as-so-ciates
 dec-li-na-tion
@@ -19,3 +22,5 @@ re-cog-ni-zance
 ref-or-ma-tion
 ret-ri-bu-tion
 ta-ble
+"""
+}

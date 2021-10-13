@@ -10,7 +10,7 @@ extension XCTestCase {
     func assert<T, E: Error & Equatable>(
         _ expression: @autoclosure () throws -> T,
         throws error: E,
-        in file: StaticString = #file,
+        in file: StaticString = #filePath,
         line: UInt = #line
     ) {
         var thrownError: Error?
