@@ -10,63 +10,63 @@ import XCTest
 /// These tests should be run with Release configuration
 ///  (e.g. `swift test -c release`)
 final class PerformanceTests: XCTestCase {
-    let testString: String = TestStrings.prideAndPrejudice
+    let testString: String = .prideAndPrejudice
 
-    func testSpeed1Constitution() {
+    func testSpeed1Constitution() throws {
         let hyphenator = Hyphenator()
-        let string = TestStrings.constitution
+        let string: String = .constitution
         _ = hyphenator.hyphenate(text: string)
         measure {
             _ = hyphenator.hyphenate(text: string)
         }
     }
 
-    func testSpeed2PrideAndPrejudice() {
+    func testSpeed2PrideAndPrejudice() throws {
         let hyphenator = Hyphenator()
-        let string = TestStrings.prideAndPrejudice
+        let string: String = .prideAndPrejudice
         _ = hyphenator.hyphenate(text: string)
         measure {
             _ = hyphenator.hyphenate(text: string)
         }
     }
 
-    func testSpeed3GreatExpectations() {
+    func testSpeed3GreatExpectations() throws {
         let hyphenator = Hyphenator()
-        let string = TestStrings.greatExpectations
+        let string: String = .greatExpectations
         _ = hyphenator.hyphenate(text: string)
         measure {
             _ = hyphenator.hyphenate(text: string)
         }
     }
 
-    func testSpeed4WarAndPeace() {
+    func testSpeed4WarAndPeace() throws {
         let hyphenator = Hyphenator()
-        let string = TestStrings.warAndPeace
+        let string: String = .warAndPeace
         _ = hyphenator.hyphenate(text: string)
         measure {
             _ = hyphenator.hyphenate(text: string)
         }
     }
 
-    func testSpeed5KingJamesBible() {
+    func testSpeed5KingJamesBible() throws {
         let hyphenator = Hyphenator()
-        let string = TestStrings.kingJamesBible
+        let string: String = .kingJamesBible
         _ = hyphenator.hyphenate(text: string)
         measure {
             _ = hyphenator.hyphenate(text: string)
         }
     }
 
-    func testSpeed6Clarissa() {
+    func testSpeed6Clarissa() throws {
         let hyphenator = Hyphenator()
-        let string = TestStrings.clarissa
+        let string: String = .clarissa
         _ = hyphenator.hyphenate(text: string)
         measure {
             _ = hyphenator.hyphenate(text: string)
         }
     }
 
-    func testSequentialPerformance() {
+    func testSequentialPerformance() throws {
         let hyphenator = Hyphenator()
         let group = DispatchGroup()
         measure {
@@ -81,7 +81,7 @@ final class PerformanceTests: XCTestCase {
         }
     }
 
-    func testConcurrentPerformance() {
+    func testConcurrentPerformance() throws {
         let hyphenator = Hyphenator()
         let group = DispatchGroup()
         measure {
@@ -100,7 +100,7 @@ final class PerformanceTests: XCTestCase {
         }
     }
 
-    func testIndependentPerformance() {
+    func testIndependentPerformance() throws {
         let hyphenator1 = Hyphenator()
         let hyphenator2 = Hyphenator()
         let group = DispatchGroup()
@@ -121,7 +121,7 @@ final class PerformanceTests: XCTestCase {
         }
     }
 
-    func testLongWordPerformance() {
+    func testLongWordPerformance() throws {
         let hyphenator = Hyphenator()
         let word = "pneumonoultramicroscopicsilicovolcanoconiosis"
         let text = String(repeating: word, count: 10)

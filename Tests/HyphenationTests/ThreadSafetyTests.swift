@@ -10,7 +10,7 @@ import XCTest
 /// These tests should be run with Debug configuration and thread santizer
 ///  (e.g. `swift test -c debug --sanitize=thread`)
 final class ThreadSafetyTests: XCTestCase {
-    func testHyphenatorCacheThreadSafety() {
+    func testHyphenatorCacheThreadSafety() throws {
         let hyphenator = Hyphenator()
         let queue = DispatchQueue(
             label: "hyphenation-cache",
@@ -30,7 +30,7 @@ final class ThreadSafetyTests: XCTestCase {
         group.wait()
     }
 
-    func testCustomExceptionsThreadSafety() {
+    func testCustomExceptionsThreadSafety() throws {
         let hyphenator = Hyphenator()
         let queue = DispatchQueue(
             label: "hyphenation-exceptions",

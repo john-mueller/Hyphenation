@@ -83,14 +83,8 @@ internal final class PatternDictionary: Copyable {
 // MARK: Default patterns
 
 extension PatternDictionary {
-    /// A URL refering to a file containing the default English patterns.
-    private static let defaultFileURL = URL(fileURLWithPath: #file)
-        .deletingLastPathComponent()
-        .deletingLastPathComponent()
-        .appendingPathComponent("Patterns/hyph-en-us.pat.txt")
-
     /// A `PatternDictionary` containing the default English patterns.
-    private static var defaultDictionary = try! PatternDictionary(fileURL: defaultFileURL)
+    private static var defaultDictionary = try! PatternDictionary(string: .defaultPatterns)
     // swiftlint:disable:previous force_try
 
     /// The length of the longest identifier in the default dictionary.

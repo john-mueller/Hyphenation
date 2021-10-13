@@ -7,7 +7,7 @@
 import Hyphenation
 import XCTest
 
-final class HyphenationTests: XCTestCase {
+final class CorrectnessTests: XCTestCase {
     var hyphenator = Hyphenator()
 
     override func setUp() {
@@ -15,7 +15,7 @@ final class HyphenationTests: XCTestCase {
         hyphenator.separator = "-"
     }
 
-    func testSingleWordHyphenation() {
+    func testSingleWordHyphenation() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "modularity"), "mod-u-lar-ity")
         XCTAssertEqual(hyphenator.hyphenate(text: "superfluous"), "su-per-flu-ous")
         XCTAssertEqual(hyphenator.hyphenate(text: "algorithm"), "al-go-rithm")
@@ -57,7 +57,7 @@ final class HyphenationTests: XCTestCase {
         XCTAssertEqual(hyphenator.hyphenate(text: "winebibber"), "winebib-ber")
     }
 
-    func testMultiWordHyphenation() {
+    func testMultiWordHyphenation() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "modularity superfluous algorithm hyphenation"),
                        "mod-u-lar-ity su-per-flu-ous al-go-rithm hy-phen-ation")
         XCTAssertEqual(hyphenator.hyphenate(text: " modularity  superfluous   \nalgorithm    hyphenation     "),
@@ -66,7 +66,7 @@ final class HyphenationTests: XCTestCase {
                        "modul1ar-ity su-perf,lu-ous al-gor$ithm hy-phe$na-tion")
     }
 
-    func testExceptions() {
+    func testExceptions() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "associate"), "as-so-ciate")
         XCTAssertEqual(hyphenator.hyphenate(text: "associates"), "as-so-ciates")
         XCTAssertEqual(hyphenator.hyphenate(text: "declination"), "dec-li-na-tion")
@@ -83,7 +83,7 @@ final class HyphenationTests: XCTestCase {
         XCTAssertEqual(hyphenator.hyphenate(text: "table"), "ta-ble")
     }
 
-    func testPreHyphenatedWords() {
+    func testPreHyphenatedWords() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "super-~fluous"), "su-per-~flu-ous")
         XCTAssertEqual(hyphenator.hyphenate(text: "super-fluous"), "super-fluous")
         hyphenator.separator = "~"
@@ -98,13 +98,13 @@ final class HyphenationTests: XCTestCase {
         XCTAssertEqual(hyphenator.hyphenate(text: "~456"), "~456")
     }
 
-    func testCaseInsensitivity() {
+    func testCaseInsensitivity() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "MoDuLaRiTy"), "MoD-u-LaR-iTy")
         hyphenator.addCustomExceptions(["mOdU-lAr-I-tY"])
         XCTAssertEqual(hyphenator.hyphenate(text: "MoDuLaRiTy"), "MoDu-LaR-i-Ty")
     }
 
-    func testCustomExceptions() {
+    func testCustomExceptions() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "project"), "project")
         hyphenator.addCustomExceptions(["pro-ject"])
         XCTAssertEqual(hyphenator.hyphenate(text: "project"), "pro-ject")
@@ -120,7 +120,7 @@ final class HyphenationTests: XCTestCase {
         XCTAssertEqual(hyphenator.hyphenate(text: "sesquipedalian"), "ses-qui-pe-da-li-an")
     }
 
-    func testCacheInvalidation() {
+    func testCacheInvalidation() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu-pid-ity")
         hyphenator.separator = "~"
         XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu~pid~ity")
@@ -134,9 +134,23 @@ final class HyphenationTests: XCTestCase {
         XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupid~i~ty")
     }
 
-    func testHyphenatorCopy() {
-        // swiftlint:disable:next force_try
-        hyphenator = try! Hyphenator(patterns: "mod5u  mod8u.", exceptions: "pro-ject")
+    func testMinValuesExtrema() throws {
+        hyphenator.minLeading = UInt.max
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupidity")
+        hyphenator.minLeading = 0
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu-pid-ity")
+        hyphenator.minTrailing = UInt.max
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupidity")
+        hyphenator.minTrailing = 0
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu-pid-i-ty")
+        hyphenator.minLength = UInt.max
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupidity")
+        hyphenator.minLength = 0
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu-pid-i-ty")
+    }
+
+    func testHyphenatorCopy() throws {
+        hyphenator = try Hyphenator(patterns: "mod5u  mod8u.", exceptions: "pro-ject")
         hyphenator.separator = "-"
         let hyphenatorCopy = hyphenator.copy()
         hyphenator.addCustomExceptions(["modulari-ty"])
@@ -147,42 +161,39 @@ final class HyphenationTests: XCTestCase {
         XCTAssertEqual(hyphenatorCopy.hyphenate(text: "project"), "pro~ject")
     }
 
-    func testCustomPatternFiles() {
-        // swiftlint:disable force_try
+    func testCustomPatternFiles() throws {
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hy-phen-ation")
-        hyphenator = try! Hyphenator(patternFile: testPatternsURL)
+        hyphenator = try Hyphenator(patternFile: .testPatterns)
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hy-phen-a-tion")
-        hyphenator = try! Hyphenator(patternFile: testPatternsURL, exceptionFile: testExceptionsURL)
+        hyphenator = try Hyphenator(patternFile: .testPatterns, exceptionFile: .testExceptions)
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hyph-ena-tion")
-        hyphenator = try! Hyphenator(patterns: "hyph3\nena3\n4tion")
+        hyphenator = try Hyphenator(patterns: "hyph3 ena3 4tion")
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hyph-enation")
-        hyphenator = try! Hyphenator(patterns: "hyph3\nena3\n4tion", exceptions: "hyphe-nation")
+        hyphenator = try Hyphenator(patterns: "hyph3 ena3 4tion", exceptions: "hyphe-nation")
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "hyphenation"), "hyphe-nation")
-        // swiftlint:enable force_try
     }
 
-    func testPatternMatching() {
-        // swiftlint:disable:next force_try
-        hyphenator = try! Hyphenator(patterns: "mod5u  mod8u.")
+    func testPatternMatching() throws {
+        hyphenator = try Hyphenator(patterns: "mod5u  mod8u.")
         hyphenator.separator = "-"
         XCTAssertEqual(hyphenator.hyphenate(text: "modularity"), "mod-ularity")
     }
 
-    func testBadPatternErrors() {
+    func testBadPatternErrors() throws {
         assert(try Hyphenator(patterns: "hyph"), throws: PatternParsingError.deficientPattern("hyph"))
         assert(try Hyphenator(patterns: "hy3ph;"), throws: PatternParsingError.invalidCharacter("hy3ph;"))
         assert(try Hyphenator(patterns: "hy33ph"), throws: PatternParsingError.consecutiveDigits("hy33ph"))
     }
 
-    func testUnhyphenateMethod() {
+    func testUnhyphenateMethod() throws {
         XCTAssertEqual(hyphenator.unhyphenate(text: "mod-u-lar-i-ty"), "modularity")
     }
 
-    func testSubstringHyphenation() {
+    func testSubstringHyphenation() throws {
         let string = "Testing hyphenation of substrings"
         let range = string.range(of: "hyphenation")!
         let newString = string.replacingCharacters(in: range, with: hyphenator.hyphenate(text: string[range]))
