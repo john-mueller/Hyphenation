@@ -57,11 +57,11 @@ public final class Hyphenator {
     // MARK: Properties
 
     /// The minimum character count for a word to be hyphenated.
-    public var minLength = 5 { didSet { clearCache() } }
+    public var minLength: UInt = 5 { didSet { clearCache() } }
     /// The minimum number of characters between the beginning of the word and a hyphenation point.
-    public var minLeading = 2 { didSet { clearCache() } }
+    public var minLeading: UInt = 2 { didSet { clearCache() } }
     /// The minimum number of characters between the end of the word and a hyphenation point.
-    public var minTrailing = 3 { didSet { clearCache() } }
+    public var minTrailing: UInt = 3 { didSet { clearCache() } }
     /// The character to insert at each hyphenation point.
     public var separator: Character = "\u{00AD}" { didSet { clearCache() } }
 
@@ -313,8 +313,8 @@ extension Hyphenator {
     ///   - priorities: The mapping from pattern locations to hyphenation priorities.
     private func separating(_ word: String, using priorities: [Location: Priority]) -> String {
         var hyphenatedWord = word
-        let minIndex = word.index(word.startIndex, offsetBy: minLeading)
-        let maxIndex = word.index(word.endIndex, offsetBy: -minTrailing)
+        let minIndex = word.index(word.startIndex, offsetBy: minLeading.clampedBetween(low: 0, high: word.count))
+        let maxIndex = word.index(word.endIndex, offsetBy: -minTrailing.clampedBetween(low: 0, high: word.count))
 
         for location in priorities.filter({ location, priority in
             if priority.isMultiple(of: 2) { return false }
@@ -326,6 +326,16 @@ extension Hyphenator {
         }
 
         return hyphenatedWord
+    }
+}
+
+// MARK: Validation Extensions
+
+extension UInt {
+    /// Converts to `Int` safely and clamps result between two values (inclusive).
+    fileprivate func clampedBetween(low: Int, high: Int) -> Int {
+        let thing = (self <= Int.max) ? Int(self) : Int.max
+        return Swift.max(low, Swift.min(high, thing))
     }
 }
 

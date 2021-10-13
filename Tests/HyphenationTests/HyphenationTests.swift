@@ -134,6 +134,21 @@ final class HyphenationTests: XCTestCase {
         XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupid~i~ty")
     }
 
+    func testMinValuesExtrema() {
+        hyphenator.minLeading = UInt.max
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupidity")
+        hyphenator.minLeading = 0
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu-pid-ity")
+        hyphenator.minTrailing = UInt.max
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupidity")
+        hyphenator.minTrailing = 0
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu-pid-i-ty")
+        hyphenator.minLength = UInt.max
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cupidity")
+        hyphenator.minLength = 0
+        XCTAssertEqual(hyphenator.hyphenate(text: "cupidity"), "cu-pid-i-ty")
+    }
+
     func testHyphenatorCopy() {
         // swiftlint:disable:next force_try
         hyphenator = try! Hyphenator(patterns: "mod5u  mod8u.", exceptions: "pro-ject")
