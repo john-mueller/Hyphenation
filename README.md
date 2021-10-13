@@ -37,7 +37,7 @@ Hyphenation is installed via the [Swift Package Manager](https://swift.org/packa
 let package = Package(
     ...
     dependencies: [
-        .package(url: "https://github.com/john-mueller/Hyphenation.git", from: "0.1.0")
+        .package(url: "https://github.com/john-mueller/Hyphenation.git", from: "0.2.0")
     ],
     ...
 )
@@ -149,9 +149,8 @@ When filing an issue, please do your best to provide reproducable steps and an e
 In the case of a pull request, please take note of the following steps:
 
 1. `swiftlint` should produce no warnings when run in the project directory. This is checked by CI, but I also recommend linting locally if possible (instructions for installation in the [SwiftLint repo](https://github.com/realm/SwiftLint#installation)).
-2. If you have added or renamed test cases, run `make generate-linuxmain` in the project directory. This will ensure all tests are run on both macOS and Linux.
-3. Make sure `make test` results in no errors. This runs the tests in the `HyphenationTests` and `ThreadSafetyTests` targets.
-4. If changing any internal implementations, please run `make bench` both with and without your changes, to check for any speed regressions. This runs the tests in the `PerformanceTests` target.
+2. Make sure `make test` results in no errors. This runs the tests in the `CorrectnessTests` and `ThreadSafetyTests` files.
+3. If changing any internal implementations, please run `make bench` both with and without your changes, to check for any speed regressions. This runs the tests in the `PerformanceTests` file.
 
 ## License
 
