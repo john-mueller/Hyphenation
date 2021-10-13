@@ -7,15 +7,15 @@ test: test-correctness test-thread-safety
 bench: test-performance
 
 test-correctness:
-	swift test -c debug --filter CorrectnessTests --enable-test-discovery
+	swift test -c debug --filter CorrectnessTests
 
 test-performance:
 	echo "" > benchmark.txt
-	swift test -c release --filter PerformanceTests --enable-test-discovery > >(tee -a benchmark.txt) 2> >(tee -a benchmark.txt >&2)
+	swift test -c release --filter PerformanceTests > >(tee -a benchmark.txt) 2> >(tee -a benchmark.txt >&2)
 	grep -oE 'test.+?average: [0-9]+\.[0-9]+' benchmark.txt | sed -E "s/]?'.+av/ av/g"
 
 test-thread-safety:
-	swift test -c debug --filter ThreadSafetyTests --sanitize=thread --enable-test-discovery
+	swift test -c debug --filter ThreadSafetyTests --sanitize=thread
 
 publish: test
 	rm -rf .docs
