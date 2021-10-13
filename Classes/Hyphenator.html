@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hyphenator Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/Hyphenator" class="dashAnchor"></a>
+
+    <a title="Hyphenator Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          Hyphenation v0.2.0 Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/john-mueller/Hyphenation/">
+            <img class="header-icon" src="../img/gh.png" alt="GitHub"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">Hyphenation Reference</a>
+      <img class="carat" src="../img/carat.png" alt=""/>
+      Hyphenator Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Hyphenator.html">Hyphenator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PatternParsingError.html">PatternParsingError</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>Hyphenator</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Hyphenator</span></code></pre>
+
+                </div>
+              </div>
+            <p>An object that hyphenates text using the Knuth-Liang algorithm.</p>
+
+<p>The Knuth-Liang hyphenation algorithm identifies likely points at which a word can be hyphenated,
+ or split across two lines of text. By default, the <code>hyphenate(text:)</code> method inserts U+00AD (soft hyphen)
+ at the calculated break points. This character is invisible unless the word occurs at the end of a line,
+ and breaking would improve text flow. Then it is rendered as a normal hyphen.</p>
+
+<p>The example below shows how to hyphenate a string, specifying the hyphen character as the separator:</p>
+
+<p><strong>Example</strong></p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenator</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">()</span>
+<span class="n">hyphenator</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s">"-"</span>
+
+<span class="k">let</span> <span class="nv">text</span> <span class="o">=</span> <span class="s">"This algorithm identifies likely hyphenation points."</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="n">text</span><span class="p">)</span>
+<span class="c1">// This al-go-rithm iden-ti-fies like-ly hy-phen-ation points.</span>
+</code></pre>
+
+<p>The algorithm is designed to prioritize the prevention of incorrect hyphenations over finding every correct
+ hyphenation—missing a single hyphenation rarely effects text flow meaningfully, but bad hyphenation can be
+ rather noticable. Nevertheless, the algorithm may occasionally produce unexpected results for brand names
+ or other unusual words. In this case, you may manually specify a desired hyphenation using exceptions.</p>
+
+<p><strong>Example</strong></p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenator</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">()</span>
+<span class="n">hyphenator</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s">"-"</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="s">"Microsoft sesquipedalian"</span><span class="p">))</span>
+<span class="c1">// Mi-crosoft sesquipedalian</span>
+
+<span class="n">hyphenator</span><span class="o">.</span><span class="nf">addCustomExceptions</span><span class="p">([</span><span class="s">"Micro-soft"</span><span class="p">,</span> <span class="s">"ses-qui-pe-da-li-an"</span><span class="p">])</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="s">"Microsoft sesquipedalian"</span><span class="p">))</span>
+<span class="c1">// Micro-soft ses-qui-pe-da-li-an</span>
+</code></pre>
+
+<p>The library includes American English patterns by default. Patterns for many other languages are available
+ online with varying licenses; see Hyphenation package README for more details.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>The <code>Hyphenator</code> class is thread-safe, and can be used to hyphenate on multiple threads simultaneously
+(although the performance benefits over using two instances are negligible).</p>
+
+</div><div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    <p>You should not apply the <code>hyphenate(text:)</code> method directly to strings containing HTML or code,
+as the code elements may be erroneously hyphenated. A safer approach is to use another tool capable of
+identifying HTML or code elements and applying hyphenation only to plain text content.
+See <a href="https://github.com/john-mueller/HyphenationPublishPlugin">HyphenationPublishPlugin</a> for an example
+hyphenating HTML using <a href="https://github.com/scinfu/SwiftSoup">SwiftSoup</a>.</p>
+
+</div>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Properties"></a>
+                <a name="//apple_ref/swift/Section/Properties" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Properties"></a>
+                  <h3 class="section-name"><span>Properties</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC9minLengthSuvp"></a>
+                    <a name="//apple_ref/swift/Property/minLength" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC9minLengthSuvp">minLength</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The minimum character count for a word to be hyphenated.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">minLength</span><span class="p">:</span> <span class="kt">UInt</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC10minLeadingSuvp"></a>
+                    <a name="//apple_ref/swift/Property/minLeading" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC10minLeadingSuvp">minLeading</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The minimum number of characters between the beginning of the word and a hyphenation point.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">minLeading</span><span class="p">:</span> <span class="kt">UInt</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC11minTrailingSuvp"></a>
+                    <a name="//apple_ref/swift/Property/minTrailing" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC11minTrailingSuvp">minTrailing</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The minimum number of characters between the end of the word and a hyphenation point.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">minTrailing</span><span class="p">:</span> <span class="kt">UInt</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC9separatorSJvp"></a>
+                    <a name="//apple_ref/swift/Property/separator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC9separatorSJvp">separator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The character to insert at each hyphenation point.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">separator</span><span class="p">:</span> <span class="kt">Character</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Initializers"></a>
+                <a name="//apple_ref/swift/Section/Initializers" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Initializers"></a>
+                  <h3 class="section-name"><span>Initializers</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorCACycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorCACycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a <code>Hyphenator</code> instance using the default English patterns and exceptions.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC8patterns10exceptionsACSS_SSSgtKcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(patterns:exceptions:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC8patterns10exceptionsACSS_SSSgtKcfc">init(patterns:<wbr>exceptions:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a <code>Hyphenator</code> instance using the patterns and exceptions contained in strings.</p>
+
+<p>The patterns and exceptions can be separated by newlines and/or whitespace.</p>
+
+<p>See <code><a href="../Enums/PatternParsingError.html">PatternParsingError</a></code> documentation for correct pattern syntax.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <p>An error of type <code><a href="../Enums/PatternParsingError.html">PatternParsingError</a></code>.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">patterns</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">exceptions</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>patterns</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A string containing patterns.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exceptions</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A string containing exceptions.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC11patternFile09exceptionD0AC10Foundation3URLV_AHSgtKcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(patternFile:exceptionFile:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC11patternFile09exceptionD0AC10Foundation3URLV_AHSgtKcfc">init(patternFile:<wbr>exceptionFile:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a <code>Hyphenator</code> instance using the patterns and exceptions contained in files.</p>
+
+<p>The patterns and exceptions can be separated by newlines and/or whitespace.</p>
+
+<p>See <code><a href="../Enums/PatternParsingError.html">PatternParsingError</a></code> documentation for correct pattern syntax.</p>
+<div class="aside aside-throws">
+    <p class="aside-title">Throws</p>
+    <p>An error of type <code><a href="../Enums/PatternParsingError.html">PatternParsingError</a></code>, or any error thrown by <code>String(contentsOf:encoding:)</code>.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">patternFile</span><span class="p">:</span> <span class="kt">URL</span><span class="p">,</span> <span class="nv">exceptionFile</span><span class="p">:</span> <span class="kt">URL</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>patternFile</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A URL referreing to a file containing patterns.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exceptionFile</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A URL referreing to a file containing exceptions.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Copying"></a>
+                <a name="//apple_ref/swift/Section/Copying" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Copying"></a>
+                  <h3 class="section-name"><span>Copying</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC4copyACXDyF"></a>
+                    <a name="//apple_ref/swift/Method/copy()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC4copyACXDyF">copy()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a new <code>Hyphenator</code> instance, copied from an existing instance.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">copy</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="k">Self</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Methods"></a>
+                <a name="//apple_ref/swift/Section/Methods" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Methods"></a>
+                  <h3 class="section-name"><span>Methods</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC9hyphenate4textSSx_tSyRzlF"></a>
+                    <a name="//apple_ref/swift/Method/hyphenate(text:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC9hyphenate4textSSx_tSyRzlF">hyphenate(text:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a new <code>String</code> formed by finding hyphenation points in the input text and
+ inserting the <code><a href="../Classes/Hyphenator.html#/s:11Hyphenation10HyphenatorC9separatorSJvp">separator</a></code> character at those points.</p>
+<div class="aside aside-complexity">
+    <p class="aside-title">Complexity</p>
+    <p>Hyphenation is an O(n) operation.</p>
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">hyphenate</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">StringProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>text</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>String</code> or <code>Substring</code> containing text to be hyphenated.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC11unhyphenate4textSSx_tSyRzlF"></a>
+                    <a name="//apple_ref/swift/Method/unhyphenate(text:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC11unhyphenate4textSSx_tSyRzlF">unhyphenate(text:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns a new <code>String</code> formed by removing the <code><a href="../Classes/Hyphenator.html#/s:11Hyphenation10HyphenatorC9separatorSJvp">separator</a></code> character from the input text.</p>
+<div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    Hyphenating a string is not guarenteed to be a reversible operation—if
+the original string contained <code><a href="../Classes/Hyphenator.html#/s:11Hyphenation10HyphenatorC9separatorSJvp">separator</a></code> characters, they will also be
+removed by this function.
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">unhyphenate</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">String</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">StringProtocol</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC10clearCacheyyF"></a>
+                    <a name="//apple_ref/swift/Method/clearCache()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC10clearCacheyyF">clearCache()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Clears the <code>Hyphenator</code>&lsquo;s internal cache.</p>
+
+<p>It is typically unnecessary to clear the cache, unless one wants to keep a configured <code>Hyphenator</code>
+ instance and ensure it does not take any more memory than necessary.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">clearCache</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Exceptions"></a>
+                <a name="//apple_ref/swift/Section/Exceptions" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Exceptions"></a>
+                  <h3 class="section-name"><span>Exceptions</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC19addCustomExceptionsyyxSlRzSS7ElementRtzlF"></a>
+                    <a name="//apple_ref/swift/Method/addCustomExceptions(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC19addCustomExceptionsyyxSlRzSS7ElementRtzlF">addCustomExceptions(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Adds custom exceptions to the <code>Hyphenator</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">addCustomExceptions</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">exceptions</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Collection</span><span class="p">,</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exceptions</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A collection of words to be treated as exceptions, with hyphens (&ldquo;-&rdquo;) inserted
+at the desired hyphenation points.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC22removeCustomExceptionsyyxSlRzSS7ElementRtzlF"></a>
+                    <a name="//apple_ref/swift/Method/removeCustomExceptions(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC22removeCustomExceptionsyyxSlRzSS7ElementRtzlF">removeCustomExceptions(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes custom exceptions from the <code>Hyphenator</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="n">removeCustomExceptions</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">exceptions</span><span class="p">:</span> <span class="kt">T</span><span class="p">)</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt">Collection</span><span class="p">,</span> <span class="kt">T</span><span class="o">.</span><span class="kt">Element</span> <span class="o">==</span> <span class="kt">String</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>exceptions</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A collection of words that should not have custom hyphenation exceptions.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC25removeAllCustomExceptionsyyF"></a>
+                    <a name="//apple_ref/swift/Method/removeAllCustomExceptions()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC25removeAllCustomExceptionsyyF">removeAllCustomExceptions()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes all custom exceptions that have been added to the <code>Hyphenator</code> using <code><a href="../Classes/Hyphenator.html#/s:11Hyphenation10HyphenatorC19addCustomExceptionsyyxSlRzSS7ElementRtzlF">addCustomExceptions(_:)</a></code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">removeAllCustomExceptions</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2020-2021 John Mueller</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>

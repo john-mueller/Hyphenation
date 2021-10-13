@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hyphenation  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+
+    <a title="Hyphenation  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          Hyphenation v0.2.0 Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/john-mueller/Hyphenation/">
+            <img class="header-icon" src="img/gh.png" alt="GitHub"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">Hyphenation Reference</a>
+      <img class="carat" src="img/carat.png" alt=""/>
+      Hyphenation  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/Hyphenator.html">Hyphenator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/PatternParsingError.html">PatternParsingError</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            
+            <h1 id='hyphenation' class='heading'>Hyphenation</h1>
+
+<p>Efficient and flexible automatic hyphenation using the Knuth-Liang algorithm.</p>
+
+<p>See full documentation at <a href="https://john-mueller.github.io/Hyphenation">https://john-mueller.github.io/Hyphenation</a>.</p>
+<h2 id='table-of-contents' class='heading'>Table of Contents</h2>
+
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a>
+
+<ul>
+<li><a href="#exceptions">Exceptions</a></li>
+<li><a href="#custom-patterns">Custom Patterns</a></li>
+<li><a href="#thread-safety">Thread Safety</a></li>
+<li><a href="#htmlcode">HTML/Code</a></li>
+</ul></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#credits">Credits</a></li>
+</ul>
+<h2 id='introduction' class='heading'>Introduction</h2>
+
+<p>The primary purpose of this library is to automatically insert soft hyphens into text to improve its layout flow. Consider the following example from <a href="https://practicaltypography.com/justified-text.html">Butterick&rsquo;s Practical Typography</a>:</p>
+
+<p><img src="img/no-hyphenation.png" alt="Text without hyphenation"></p>
+
+<p>As line length decreases, justified text often displays large gaps between words, while left- or right-aligned text displays increasingly uneven margins. By inserting soft hyphens into words (which are only displayed when they fall at the end of a line), the text can be split more naturally across multiple lines, improving the text&rsquo;s aesthetic appearance:</p>
+
+<p><img src="img/with-hyphenation.png" alt="Text with hyphenation"></p>
+
+<p>This proves useful in HTML (since the <code>hyphens</code> CSS property is <a href="https://caniuse.com/#search=hyphen">not universally supported</a>), and will even work in UIKit and SwiftUI text components.</p>
+<h2 id='installation' class='heading'>Installation</h2>
+
+<p>Hyphenation is installed via the <a href="https://swift.org/package-manager/">Swift Package Manager</a>. First, add it to your dependencies:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/john-mueller/Hyphenation.git"</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="s">"0.2.0"</span><span class="p">)</span>
+    <span class="p">],</span>
+    <span class="o">...</span>
+<span class="p">)</span>
+</code></pre>
+
+<p>Then import the Hyphenation module wherever it is needed:</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Hyphenation</span>
+</code></pre>
+<h2 id='usage' class='heading'>Usage</h2>
+
+<p>Basic usage just requires creating a <code><a href="Classes/Hyphenator.html">Hyphenator</a></code> instance and calling its <code>hyphenate(text:)</code> method:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenator</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">()</span>
+<span class="n">hyphenator</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s">"-"</span>
+
+<span class="k">let</span> <span class="nv">text</span> <span class="o">=</span> <span class="s">"This algorithm identifies likely hyphenation points."</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="n">text</span><span class="p">))</span>
+<span class="c1">// This al-go-rithm iden-ti-fies like-ly hy-phen-ation points.</span>
+</code></pre>
+
+<p>You can also remove the <code>separator</code> character from a string by calling <code>unhyphenate(text:)</code>:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenatedText</span> <span class="o">=</span> <span class="s">"This al-go-rithm iden-ti-fies like-ly hy-phen-ation points."</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">unhyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="n">hyphenatedText</span><span class="p">))</span>
+<span class="c1">// This algorithm identifies likely hyphenation points.</span>
+</code></pre>
+
+<p>Note that if the original string contained the <code>separator</code> character, the <code>unhyphenate(text:)</code> method will remove those instances as well, so hyphenating and unhyphenating a string may not recover the original string.</p>
+<h3 id='exceptions' class='heading'>Exceptions</h3>
+
+<p>The algorithm is designed to prioritize the prevention of incorrect hyphenations over finding every correct hyphenation—missing a single hyphenation rarely effects text flow meaningfully, but bad hyphenation can be rather noticable. Because the patterns were derived from a English dictionary, it can make good guesses about many words that do not appear in a dictionary.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenator</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">()</span>
+<span class="n">hyphenator</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s">"-"</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="s">"swiftlang supercalifragilisticexpialidocious"</span><span class="p">))</span>
+<span class="c1">// swift-lang su-per-cal-ifrag-ilis-tic-ex-pi-ali-do-cious</span>
+</code></pre>
+
+<p>Nevertheless, the algorithm may occasionally produce unexpected results for brand names or other unusual words. In this case, you may manually specify a desired hyphenation using exceptions.</p>
+<pre class="highlight swift"><code><span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="s">"Microsoft sesquipedalian"</span><span class="p">))</span>
+<span class="c1">// Mi-crosoft sesquipedalian</span>
+
+<span class="n">hyphenator</span><span class="o">.</span><span class="nf">addCustomExceptions</span><span class="p">([</span><span class="s">"Micro-soft"</span><span class="p">,</span> <span class="s">"ses-qui-pe-da-li-an"</span><span class="p">])</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="s">"Microsoft sesquipedalian"</span><span class="p">))</span>
+<span class="c1">// Micro-soft ses-qui-pe-da-li-an</span>
+</code></pre>
+
+<p>To remove custom exceptions, use the following methods:</p>
+<pre class="highlight swift"><code><span class="n">hyphenator</span><span class="o">.</span><span class="nf">removeCustomExceptions</span><span class="p">([</span><span class="s">"sesquipedalian"</span><span class="p">])</span>
+<span class="n">hyphenator</span><span class="o">.</span><span class="nf">removeAllCustomExceptions</span><span class="p">()</span>
+</code></pre>
+<h3 id='customizable-properties' class='heading'>Customizable Properties</h3>
+
+<p>There are several properties you can modify to adjust how words are hyphenated.</p>
+
+<p>The <code>separator</code> property sets the character inserted at hyphenation points. By default, this is U+00AD (soft hyphen). </p>
+
+<p>The <code>minLength</code>, <code>minLeading</code>, and <code>minTrailing</code> properties adjust where the separator character may be inserted in a word.</p>
+
+<ul>
+<li>Words shorter than <code>minLength</code> will not be hyphenated.</li>
+<li>Hyphenation will not occur within the first <code>minLeading</code> characters.</li>
+<li>Hyphenation will not occur within the last <code>minTrailing</code> characters.</li>
+</ul>
+<h3 id='custom-patterns' class='heading'>Custom Patterns</h3>
+
+<p>This library includes American English hyphenation patterns by default, but you can easily initialize a <code><a href="Classes/Hyphenator.html">Hyphenator</a></code> instance using patterns for many other languages. The patterns can be passed via <code>String</code> or <code>URL</code>:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenator1</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">(</span><span class="nv">patterns</span><span class="p">:</span> <span class="n">patternsString</span><span class="p">,</span> <span class="nv">exceptions</span><span class="p">:</span> <span class="n">exceptionsString</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">hyphenator2</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">(</span><span class="nv">patternFile</span><span class="p">:</span> <span class="n">patternsURL</span><span class="p">,</span> <span class="nv">exceptions</span><span class="p">:</span> <span class="n">exceptionsURL</span><span class="p">)</span>
+</code></pre>
+
+<p>Patterns for a wide variety of languages can be found in the <a href="https://github.com/hyphenation/tex-hyphen/tree/master/hyph-utf8/tex/generic/hyph-utf8/patterns/txt">TeX hyphenation repo</a>. <em>Please check the license under which each set of patterns is released</em> at the <a href="http://www.hyphenation.org/tex#languages">TeX hyphenation patterns website</a>. This page also lists the proper <code>minLeading</code> and <code>minTrailing</code> for each language.</p>
+
+<p>When initializing a new <code><a href="Classes/Hyphenator.html">Hyphenator</a></code> instance, it is assumed that patterns are separated by newlines or whitespace.</p>
+<h3 id='thread-safety' class='heading'>Thread Safety</h3>
+
+<p>The Hyphenator class is thread-safe, and can be used to hyphenate on multiple threads simultaneously (although the performance benefits over using two instances are negligible).</p>
+
+<p>The <code>copy()</code> method provides an efficient way to create a new <code><a href="Classes/Hyphenator.html">Hyphenator</a></code> instance with the same properties and patterns as an existing instance.</p>
+<h3 id='html-code' class='heading'>HTML/Code</h3>
+
+<p>You should not apply the <code>hyphenate(text:)</code> method directly to strings containing HTML or code, as the code elements may be erroneously hyphenated. A safer approach is to use another tool capable of identifying HTML or code elements and applying hyphenation only to plain text content within the markup.</p>
+
+<p>See <a href="https://github.com/john-mueller/HyphenationPublishPlugin">HyphenationPublishPlugin</a> for an example hyphenating HTML using <a href="https://github.com/scinfu/SwiftSoup">SwiftSoup</a>.</p>
+<h2 id='contributing' class='heading'>Contributing</h2>
+
+<p>If you encounter an issue using Hyphenation, please let me know by filing an issue or submitting a pull request!</p>
+
+<p>When filing an issue, please do your best to provide reproducable steps and an explanation of the expected behavior.</p>
+
+<p>In the case of a pull request, please take note of the following steps:</p>
+
+<ol>
+<li><code>swiftlint</code> should produce no warnings when run in the project directory. This is checked by CI, but I also recommend linting locally if possible (instructions for installation in the <a href="https://github.com/realm/SwiftLint#installation">SwiftLint repo</a>).</li>
+<li>Make sure <code>make test</code> results in no errors. This runs the tests in the <code>CorrectnessTests</code> and <code>ThreadSafetyTests</code> files.</li>
+<li>If changing any internal implementations, please run <code>make bench</code> both with and without your changes, to check for any speed regressions. This runs the tests in the <code>PerformanceTests</code> file.</li>
+</ol>
+<h2 id='license' class='heading'>License</h2>
+
+<p>Hyphenation is provided under the MIT license (see <a href="LICENSE.md">LICENSE.md</a>).</p>
+
+<p>The English hyphenation patterns are provided under the <a href="https://github.com/hyphenation/tex-hyphen/blob/master/hyph-utf8/tex/generic/hyph-utf8/patterns/tex/hyph-en-us.tex">original custom license</a>, and are sourced from the <a href="https://github.com/hyphenation/tex-hyphen/tree/master/hyph-utf8/tex/generic/hyph-utf8/patterns/txt">TeX hyphenation repo</a>.</p>
+
+<p><a href="Tests/PerformanceTests/TestHelpers/">The texts</a> used for performance testing are in the public domain, and are attributed in their headers.</p>
+
+<p>The example paragraphs in the Introduction are from <a href="https://practicaltypography.com">Butterick&rsquo;s Practical Typography</a>, and are used with permission.</p>
+<h2 id='credits' class='heading'>Credits</h2>
+
+<p>This library was inspired by the pages on <a href="https://practicaltypography.com/justified-text.html">justified text</a> and <a href="https://practicaltypography.com/optional-hyphens.html">optional hyphens</a> in <a href="https://practicaltypography.com">Butterick&rsquo;s Practical Typography</a> and the author&rsquo;s <a href="https://github.com/mbutterick/hyphenate">implementation in Racket</a>. It&rsquo;s worth a read!</p>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2020-2021 John Mueller</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>

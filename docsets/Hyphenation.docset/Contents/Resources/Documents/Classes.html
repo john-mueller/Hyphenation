@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Classes  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Section/Classes" class="dashAnchor"></a>
+
+    <a title="Classes  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          Hyphenation v0.2.0 Docs
+        </a>
+         (100% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/john-mueller/Hyphenation/">
+            <img class="header-icon" src="img/gh.png" alt="GitHub"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">Hyphenation Reference</a>
+      <img class="carat" src="img/carat.png" alt=""/>
+      Classes  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/Hyphenator.html">Hyphenator</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Enums/PatternParsingError.html">PatternParsingError</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>Classes</h1>
+            <p>The following classes are available globally.</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11Hyphenation10HyphenatorC"></a>
+                    <a name="//apple_ref/swift/Class/Hyphenator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11Hyphenation10HyphenatorC">Hyphenator</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An object that hyphenates text using the Knuth-Liang algorithm.</p>
+
+<p>The Knuth-Liang hyphenation algorithm identifies likely points at which a word can be hyphenated,
+ or split across two lines of text. By default, the <code>hyphenate(text:)</code> method inserts U+00AD (soft hyphen)
+ at the calculated break points. This character is invisible unless the word occurs at the end of a line,
+ and breaking would improve text flow. Then it is rendered as a normal hyphen.</p>
+
+<p>The example below shows how to hyphenate a string, specifying the hyphen character as the separator:</p>
+
+<p><strong>Example</strong></p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenator</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">()</span>
+<span class="n">hyphenator</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s">"-"</span>
+
+<span class="k">let</span> <span class="nv">text</span> <span class="o">=</span> <span class="s">"This algorithm identifies likely hyphenation points."</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="n">text</span><span class="p">)</span>
+<span class="c1">// This al-go-rithm iden-ti-fies like-ly hy-phen-ation points.</span>
+</code></pre>
+
+<p>The algorithm is designed to prioritize the prevention of incorrect hyphenations over finding every correct
+ hyphenation—missing a single hyphenation rarely effects text flow meaningfully, but bad hyphenation can be
+ rather noticable. Nevertheless, the algorithm may occasionally produce unexpected results for brand names
+ or other unusual words. In this case, you may manually specify a desired hyphenation using exceptions.</p>
+
+<p><strong>Example</strong></p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">hyphenator</span> <span class="o">=</span> <span class="kt">Hyphenator</span><span class="p">()</span>
+<span class="n">hyphenator</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s">"-"</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="s">"Microsoft sesquipedalian"</span><span class="p">))</span>
+<span class="c1">// Mi-crosoft sesquipedalian</span>
+
+<span class="n">hyphenator</span><span class="o">.</span><span class="nf">addCustomExceptions</span><span class="p">([</span><span class="s">"Micro-soft"</span><span class="p">,</span> <span class="s">"ses-qui-pe-da-li-an"</span><span class="p">])</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="n">hyphenator</span><span class="o">.</span><span class="nf">hyphenate</span><span class="p">(</span><span class="nv">text</span><span class="p">:</span> <span class="s">"Microsoft sesquipedalian"</span><span class="p">))</span>
+<span class="c1">// Micro-soft ses-qui-pe-da-li-an</span>
+</code></pre>
+
+<p>The library includes American English patterns by default. Patterns for many other languages are available
+ online with varying licenses; see Hyphenation package README for more details.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>The <code>Hyphenator</code> class is thread-safe, and can be used to hyphenate on multiple threads simultaneously
+(although the performance benefits over using two instances are negligible).</p>
+
+</div><div class="aside aside-important">
+    <p class="aside-title">Important</p>
+    <p>You should not apply the <code>hyphenate(text:)</code> method directly to strings containing HTML or code,
+as the code elements may be erroneously hyphenated. A safer approach is to use another tool capable of
+identifying HTML or code elements and applying hyphenation only to plain text content.
+See <a href="https://github.com/john-mueller/HyphenationPublishPlugin">HyphenationPublishPlugin</a> for an example
+hyphenating HTML using <a href="https://github.com/scinfu/SwiftSoup">SwiftSoup</a>.</p>
+
+</div>
+
+                        <a href="Classes/Hyphenator.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Hyphenator</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>© 2020-2021 John Mueller</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>
