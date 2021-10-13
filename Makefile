@@ -7,15 +7,15 @@ test: test-correctness test-thread-safety
 bench: test-performance
 
 test-correctness:
-	HYPHENATION_TEST_TYPE=hyphenation swift test -c debug --enable-test-discovery
+	swift test -c debug --filter CorrectnessTests --enable-test-discovery
 
 test-performance:
 	echo "" > benchmark.txt
-	HYPHENATION_TEST_TYPE=performance swift test -c release --enable-test-discovery > >(tee -a benchmark.txt) 2> >(tee -a benchmark.txt >&2)
+	swift test -c release --filter PerformanceTests --enable-test-discovery > >(tee -a benchmark.txt) 2> >(tee -a benchmark.txt >&2)
 	grep -oE 'test.+?average: [0-9]+\.[0-9]+' benchmark.txt | sed -E "s/]?'.+av/ av/g"
 
 test-thread-safety:
-	HYPHENATION_TEST_TYPE=thread-safety swift test -c debug --sanitize=thread --enable-test-discovery
+	swift test -c debug --filter ThreadSafetyTests --sanitize=thread --enable-test-discovery
 
 publish: test
 	rm -rf .docs
